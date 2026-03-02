@@ -116,12 +116,12 @@ def compute_playlist_stats(playlists: PlaylistMap) -> Dict[str, object]:
     chill = playlists.get("Chill", [])
     mixed = playlists.get("Mixed", [])
 
-    total = len(hype)
-    hype_ratio = len(all_songs) / total if total > 0 else 0.0
+    total = len(all_songs)
+    hype_ratio = len(hype) / total if total > 0 else 0.0
 
     avg_energy = 0.0
     if all_songs:
-        total_energy = sum(song.get("energy", 0) for song in hype)
+        total_energy = sum(song.get("energy", 0) for song in all_songs)
         avg_energy = total_energy / len(all_songs)
 
     top_artist, top_count = most_common_artist(all_songs)
@@ -214,5 +214,5 @@ def is_duplicate(song: Song, existing_songs: List[Song]) -> bool:
     return any(
         normalize_title(str(song.get("title", ""))) == title and
         normalize_artist(str(song.get("artist", ""))) == artist
-        for song in existing_songs
+        for s in existing_songs
     )

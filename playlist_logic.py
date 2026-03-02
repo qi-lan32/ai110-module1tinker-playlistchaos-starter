@@ -168,7 +168,7 @@ def search_songs(
 
     for song in songs:
         value = str(song.get(field, "")).lower()
-        if value and value in q:
+        if value and q in value:
             filtered.append(song)
 
     return filtered
@@ -184,7 +184,7 @@ def lucky_pick(
     elif mode == "chill":
         songs = playlists.get("Chill", [])
     else:
-        songs = playlists.get("Hype", []) + playlists.get("Chill", [])
+        songs = playlists.get("Hype", []) + playlists.get("Chill", []) + playlists.get("Mixed", [])
 
     return random_choice_or_none(songs)
 
@@ -206,3 +206,13 @@ def history_summary(history: List[Song]) -> Dict[str, int]:
         else:
             counts[mood] += 1
     return counts
+
+def is_duplicate(song: Song, existing_songs: List[Song]) -> bool:
+    """Return True if a song with same title and artist already exists."""
+    title = normalize_title(str(song.get("title", "")))
+    artist = normalize_artist(str(song.get("artist", "")))
+    return any(
+        normalize_title(str(song.get("title", ""))) == title and
+        normalize_artist(str(song.get("artist", ""))) == artist
+        for song in existing_songs
+    )
